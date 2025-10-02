@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>护眼配色展示 – Eye‑Friendly Colors</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="展示几套经过科研、标准验证的护眼配色方案，实时对比度检查，支持用户自定义配色并给出合规提示。">
+<meta name="author" content="Your Name">
+
+<style>
+/* ---------- 全局变量 & 颜色方案 ---------- */
+:root{
+    --bg:#ffffff;      /* 页面背景 */
+    --fg:#212121;      /* 正文文字 */
+    --accent:#4caf50;  /* 强调色（链接、卡片高亮） */
+    --radius:.5rem;
+}
+
+/* 预设配色方案（对应卡片的 .scheme‑X） */
+.scheme-1{--bg:#121212;--fg:#E0E0E0;}
+.scheme-2{--bg:#1E1E1E;--fg:#C5C5C5;}
+.scheme-3{--bg:#0F0F0F;--fg:#FFFFFF;}
+.scheme-4{--bg:#F5F5F5;--fg:#212121;}
+.scheme-5{--bg:#FAFAFA;--fg:#222222;}
+.scheme-6{--bg:#FFFAE3;--fg:#212121;}
+
+/* ---------- 基础页面样式 ---------- */
+body{
+    margin:0;
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);
+    color:var(--fg);
+    line-height:1.6;
+    transition:background .3s,color .3s;
+}
+header{
+    padding:1.5rem 1rem;
+    text-align:center;
+    background:linear-gradient(135deg,rgba(255,255,255,.05),transparent);
+}
+header h1{margin:0;font-size:2rem;font-weight:600;}
+main{max-width:1200px;margin:0 auto;padding:1rem;}
+.grid{display:grid;gap:1.5rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+
+/* 卡片通用 */
+.card{
+    background:var(--bg);
+    color:var(--fg);
+    border-radius:var(--radius);
+    box-shadow:0 2px 6px rgba(0,0,0,.12);
+    overflow:hidden;
+    cursor:pointer;
+    transition:transform .2s,box-shadow .2s;
+}
+.card:hover{transform:translateY(-3px);box-shadow:0 6px 12px rgba(0,0,0,.15);}
+.card-header{padding:.8rem 1rem;background:rgba(0,0,0,.04);font-weight:600;border-bottom:1px solid rgba(0,0,0,.08);}
+.card-body{padding:1rem;font-size:.95rem;}
+.contrast{margin-top:.5rem;font-size:.85rem;font-family:"Courier New",monospace;}
+.active-scheme{outline:3px solid var(--accent);outline-offset:-3px;}
+
+/* 自定义配色表单 */
+#custom-form{
+    margin:1rem 0;
+    padding:1rem;
+    border:1px solid rgba(0,0,0,.12);
+    border-radius:var(--radius);
+    background:rgba(0,0,0,.02);
+}
+#custom-form label{
+    display:inline-block;
+    margin-right:.8rem;
+    font-weight:600;
+}
+#custom-form input[type="color"]{
+    width:2.5rem;height:2.5rem;border:none;background:none;
+    cursor:pointer;
+}
+#custom-form button{
+    margin-left:1rem;
+    padding:.4rem .8rem;
+    background:var(--accent);
+    color:#fff;
+    border:none;border-radius:.3rem;
+    cursor:pointer;
+}
+
+/* Footer */
+footer{text-align:center;padding:2rem 1rem;font-size:.85rem;opacity:.7;}
+a{color:var(--accent);text-decoration:underline;}
+@media (prefers-color-scheme:dark){
+    :root{--accent:#64ffda;}
+}
+@media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{transition-duration:0s!important;}
+}
+</style>
+</head>
+
+<body class="scheme-1"><!-- 默认配色 scheme-1 -->
+<header>
+    <h1>护眼配色展示 🎨</h1>
+    <p>点击任意卡片即可在本页面实时预览该配色的视觉效果</p>
+</header>
+
+<main>
+    <!-- ---------- 自定义配色表单 ---------- -->
+    <section id="custom-form">
+        <h2 style="margin-top:0;">🔧 自定义配色（即使不达标也可预览）</h2>
+        <label for="bg-picker">背景颜色：</label>
+        <input type="color" id="bg-picker" value="#121212">
+        <label for="fg-picker">前景颜色：</label>
+        <input type="color" id="fg-picker" value="#E0E0E0">
+        <button id="apply-custom">预览配色</button>
+    </section>
+
+    <!-- ---------- 预定义配色卡片 ---------- -->
+    <section class="grid" id="palette">
+        <article class="card scheme-1" data-name="暗光阅读" data-bg="#121212" data-fg="#E0E0E0">
+            <div class="card-header">暗光阅读</div>
+            <div class="card-body">
+                背景 <code>#121212</code> / 前景 <code>#E0E0E0</code><br>
+                <span class="contrast">对比度：<span class="ratio"></span>（WCAG&nbsp;AA）</span>
+            </div>
+        </article>
+
+        <article class="card scheme-2" data-name="夜间代码" data-bg="#1E1E1E" data-fg="#C5C5C5">
+            <div class="card-header">夜间代码</div>
+            <div class="card-body">
+                背景 <code>#1E1E1E</code> / 前景 <code>#C5C5C5</code><br>
+                <span class="contrast">对比度：<span class="ratio"></span>（WCAG&nbsp;AA）</span>
+            </div>
+        </article>
+
+        <article class="card scheme-3" data-name="视频观看" data-bg="#0F0F0F" data-fg="#FFFFFF">
+            <div class="card-header">视频观看</div>
+            <div class="card-body">
+                背景 <code>#0F0F0F</code> / 前景 <code>#FFFFFF</code><br>
+                <span class="contrast">对比度：<span class="ratio"></span>（WCAG&nbsp;AA）</span>
+            </div>
+        </article>
+
+        <article class="card scheme-4" data-name="文档编辑" data-bg="#F5F5F5" data-fg="#212121">
+            <div class="card-header">文档编辑</div>
+            <div class="card-body">
+                背景 <code>#F5F5F5</code> / 前景 <code>#212121</code><br>
+                <span class="contrast">对比度：<span class="ratio"></span>（WCAG&nbsp;AA）</span>
+            </div>
+        </article>
+
+        <article class="card scheme-5" data-name="儿童学习" data-bg="#FAFAFA" data-fg="#222222">
+            <div class="card-header">儿童学习</div>
+            <div class="card-body">
+                背景 <code>#FAFAFA</code> / 前景 <code>#222222</code><br>
+                <span class="contrast">对比度：<span class="ratio"></span>（WCAG&nbsp;AA）</span>
+            </div>
+        </article>
+
+        <article class="card scheme-6" data-name="暖黄夜间" data-bg="#FFFAE3" data-fg="#212121">
+            <div class="card-header">暖黄夜间</div>
+            <div class="card-body">
+                背景 <code>#FFFAE3</code> / 前景 <code>#212121</code><br>
+                <span class="contrast">对比度：<span class="ratio"></span>（WCAG&nbsp;AA）</span>
+            </div>
+        </article>
+
+        <!-- ======== 自定义卡片（运行时动态生成） ======== -->
+        <article class="card" id="custom-card" style="display:none;">
+            <div class="card-header">自定义配色</div>
+            <div class="card-body">
+                背景 <code id="custom-bg-code"></code> / 前景 <code id="custom-fg-code"></code><br>
+                <span class="contrast">对比度：<span class="ratio"></span>（WCAG&nbsp;AA）</span>
+            </div>
+        </article>
+    </section>
+</main>
+
+<footer>
+    <p place-items: "center">© 20251001 Mr haoqixin – CC BY 4.0</p>
+</footer>
+
+<script>
+/* ---------- 对比度计算（WCAG） ---------- */
+function luminance(hex){
+    const rgb = hex.replace('#','').match(/.{2}/g).map(v=>parseInt(v,16)/255);
+    const sRGB = rgb.map(c=>c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4));
+    return 0.2126*sRGB[0] + 0.7152*sRGB[1] + 0.0722*sRGB[2];
+}
+function contrastRatio(bg,fg){
+    const L1 = luminance(bg), L2 = luminance(fg);
+    return (Math.max(L1,L2)+0.05)/(Math.min(L1,L2)+0.05);
+}
+function fmtRatio(r){return (Math.round(r*100)/100).toFixed(2)+':1';}
+
+/* ---------- 为所有卡片（包括自定义）填充对比度 ---------- */
+/* ---------- 为所有卡片（包括自定义）填充对比度 ---------- */
+function setCardContrast(card){
+    const bg = card.dataset.bg;
+    const fg = card.dataset.fg;
+    const ratio = contrastRatio(bg,fg);
+    const span = card.querySelector('.ratio');
+    span.textContent = fmtRatio(ratio);
+
+    // --- 修改：查找并可能移除已存在的警告标签 ---
+    let warn = card.querySelector('.warning');
+    // ------------------------------------------------
+
+    if (ratio >= 7){
+        span.style.color = '#0a8';
+        span.title = 'AAA 级对比度（推荐）';
+        // --- 新增：如果达标，移除警告标签 ---
+        if (warn) warn.remove();
+        // ----------------------------------------
+    }else if (ratio >= 4.5){
+        span.style.color = '#ffb400';
+        span.title = 'AA 级对比度（可接受）';
+        // --- 新增：如果达标，移除警告标签 ---
+        if (warn) warn.remove();
+        // ----------------------------------------
+    }else{
+        span.style.color = '#e53935';
+        span.title = '对比度不足（不推荐使用）';
+        // --- 修改：只有在没有警告标签时才创建 ---
+        if (!warn){
+            warn = document.createElement('div');
+            warn.className = 'warning';
+            warn.style.position = 'absolute';
+            warn.style.right = '.5rem';
+            warn.style.bottom = '.5rem';
+            warn.style.background = 'rgba(229,57,53,0.85)';
+            warn.style.color = '#fff';
+            warn.style.padding = '2px 6px';
+            warn.style.borderRadius = '.3rem';
+            warn.style.fontSize = '.75rem';
+            warn.textContent = '不推荐';
+            card.style.position = 'relative';
+            card.appendChild(warn);
+        }
+        // ------------------------------------------
+    }
+}
+
+/* ---------- 初始化预置卡片 ---------- */
+document.querySelectorAll('.card').forEach(c => {
+    if (c.dataset.bg && c.dataset.fg) setCardContrast(c);
+});
+
+/* ---------- 页面配色切换（系统配色） ---------- */
+const body = document.body;
+const cards = document.querySelectorAll('.card:not(#custom-card)'); // 排除自定义卡片
+const customCard = document.getElementById('custom-card');
+
+// 应用预设配色方案
+function applyScheme(schemeClass){
+    body.style.removeProperty('--bg');
+    body.style.removeProperty('--fg');
+    body.className = ''; 
+    body.classList.add(schemeClass); 
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('active-scheme'));
+    customCard.classList.remove('active-scheme');
+    const active = document.querySelector(`.card.${schemeClass}`);
+    if (active) active.classList.add('active-scheme');
+}
+
+// 应用自定义配色方案
+function applyCustomScheme(bg, fg) {
+    body.style.setProperty('--bg', bg);
+    body.style.setProperty('--fg', fg);
+    
+    // 移除所有卡片的高亮
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('active-scheme'));
+    // 为自定义卡片添加高亮
+    customCard.classList.add('active-scheme');
+}
+
+// 使用事件委托为所有卡片添加点击事件
+const palette = document.getElementById('palette');
+palette.addEventListener('click', function(e) {
+    const card = e.target.closest('.card');
+    if (!card) return;
+
+    const scheme = [...card.classList].find(cls => cls.startsWith('scheme-'));
+    
+    // 情况1: 点击了预设配色卡片
+    if (scheme) {
+        applyScheme(scheme);
+        localStorage.setItem('eyeFriendlyScheme', scheme);
+        localStorage.removeItem('customBg');
+        localStorage.removeItem('customFg');
+        return;
+    }
+
+    // 情况2: 点击了自定义配色卡片
+    if (card.id === 'custom-card') {
+        const bg = card.dataset.bg;
+        const fg = card.dataset.fg;
+        if (bg && fg) {
+            applyCustomScheme(bg, fg);
+            // 存储自定义配色
+            localStorage.setItem('eyeFriendlyScheme', 'scheme-custom');
+            localStorage.setItem('customBg', bg);
+            localStorage.setItem('customFg', fg);
+        }
+    }
+});
+
+/* ---------- 读取本地存储的上一次选择 ---------- */
+(function () {
+    const saved = localStorage.getItem('eyeFriendlyScheme');
+    if (saved === 'scheme-custom') {
+        const savedBg = localStorage.getItem('customBg');
+        const savedFg = localStorage.getItem('customFg');
+        if (savedBg && savedFg) {
+            // 模拟点击“预览配色”按钮，以填充自定义卡片
+            document.getElementById('bg-picker').value = savedBg;
+            document.getElementById('fg-picker').value = savedFg;
+            document.getElementById('apply-custom').click();
+            // 然后应用配色
+            applyCustomScheme(savedBg, savedFg);
+        }
+    } else if (saved) {
+        applyScheme(saved);
+    }
+})();
+
+/* ---------- 自定义配色交互 ---------- */
+const bgPicker = document.getElementById('bg-picker');
+const fgPicker = document.getElementById('fg-picker');
+const applyBtn = document.getElementById('apply-custom');
+const customBgCode = document.getElementById('custom-bg-code');
+const customFgCode = document.getElementById('custom-fg-code');
+
+applyBtn.addEventListener('click',()=>{
+    const bg = bgPicker.value.toUpperCase();
+    const fg = fgPicker.value.toUpperCase();
+
+    // 为自定义卡片设置 data‑属性，便于通用函数 reuse
+    customCard.dataset.bg = bg;
+    customCard.dataset.fg = fg;
+    customBgCode.textContent = bg;
+    customFgCode.textContent = fg;
+
+    // 计算并展示对比度（包括警示）
+    setCardContrast(customCard);
+
+    // 显示卡片（第一次使用时默认隐藏）
+    customCard.style.display = 'block';
+});
+</script>
